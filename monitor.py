@@ -127,45 +127,75 @@ def to_local_naive(dt_value):
 
 # ---------------- 条件引擎 ----------------
 
-OPERATORS = {
-    "=": lambda a, b: a == b,
-    "!=": lambda a, b: a != b,
-    ">": lambda a, b: a > b,
-    "<": lambda a, b: a < b,
-    ">=": lambda a, b: a >= b,
-    "<=": lambda a, b: a <= b,
-}
+# 支持的时间格式（fromisoformat 之外的补充格式）
+TIME_FORMATS = [
+    "%Y-%m-%d %H:%M:%S", "%Y-%m-%d %H:%M", "%Y-%m-%d",
+    "%Y/%m/%d %H:%M:%S", "%Y/%m/%d %H:%M", "%Y/%m/%d",
+    "%Y-%m-%dT%H:%M:%S", "%Y-%m-%dT%H:%M:%S.%f",
+]
 
 
-def _compare(cell, op, raw_value):
-    """按 数值 -> 时间 -> 字符串 的顺序尝试类型匹配后比较。"""
-    if op == "contains":
-        return str(raw_value) in str(cell)
-    cmp_fn = OPERATORS[op]
+def parse_time(value):
+    """精准时间解析：支持 ISO 及常见格式，失败抛 ValueError。"""
+    if isinstance(value, datetime):
+        return to_local_naive(value)
+    s = str(value).strip()
     try:
-        return cmp_fn(float(cell), float(raw_value))
-    except (TypeError, ValueError):
+        return to_local_naive(datetime.fromisoformat(s))
+    except ValueError:
         pass
-    try:
-        return cmp_fn(to_local_naive(cell), to_local_naive(str(raw_value)))
-    except (TypeError, ValueError):
-        pass
-    return cmp_fn(str(cell), str(raw_value))
+    for fmt in TIME_FORMATS:
+        try:
+            return datetime.strptime(s, fmt)
+        except ValueError:
+            pass
+    raise ValueError(f"无法解析时间值: {value!r}")
 
 
 def eval_condition(row, cond, now=None):
-    """评估单条条件。条件格式: {"column":.., "op":.., "value":.., "value2":..}"""
+    """评估单条条件。条件格式: {"column":.., "op":.., "value":..}（三元组，无值2）
+
+    操作符:
+      字符串模糊比对（大小写不敏感、忽略首尾空白）: eq / ne / contains
+      时间精准比对（双方都解析为 datetime）: time_eq / time_before / time_after
+      与当前时间差（分钟）: tdiff_gte / tdiff_lte / tdiff_eq
+    """
     col = cond["column"]
     if col not in row:
         raise KeyError(col)
-    cell = row[col]
+    cell = "" if row[col] is None else str(row[col]).strip()
+    val = str(cond["value"]).strip()
     op = cond["op"]
-    if op == "time_diff_between":
-        # 时间列与当前时间的绝对差值（分钟）落在 [value, value2] 区间内
-        dt = to_local_naive(cell)
-        diff = abs(((now or datetime.now()) - dt).total_seconds()) / 60
-        return float(cond["value"]) <= diff <= float(cond["value2"])
-    return _compare(cell, op, cond["value"])
+
+    # 字符串模糊比对
+    if op in ("eq", "ne"):
+        try:  # 双方都解析为数字时按数值比较，增强鲁棒性（如 "5" 与 "5.0"）
+            res = float(cell) == float(val)
+        except ValueError:
+            res = cell.lower() == val.lower()
+        return res if op == "eq" else not res
+    if op == "contains":
+        return val.lower() in cell.lower()
+
+    # 时间精准比对
+    if op in ("time_eq", "time_before", "time_after"):
+        t1 = parse_time(row[col])
+        t2 = parse_time(val)
+        return {"time_eq": t1 == t2, "time_before": t1 < t2,
+                "time_after": t1 > t2}[op]
+
+    # 与当前时间的绝对差值（分钟）
+    if op in ("tdiff_gte", "tdiff_lte", "tdiff_eq"):
+        t = parse_time(row[col])
+        diff = abs(((now or datetime.now()) - t).total_seconds()) / 60
+        target = float(val)
+        if op == "tdiff_gte":
+            return diff >= target
+        if op == "tdiff_lte":
+            return diff <= target
+        return abs(diff - target) < 1  # tdiff_eq: 1 分钟容差
+
+    raise ValueError(f"未知条件操作符: {op}")
 
 
 def row_matches(row, conditions, combinator):
