@@ -45,14 +45,15 @@ DRIVERS = [
 
 # 条件操作符: (界面显示名, 内部key)
 OP_CHOICES = [
-    ("等于 (=)", "="),
-    ("不等于 (!=)", "!="),
-    ("大于 (>)", ">"),
-    ("小于 (<)", "<"),
-    ("大于等于 (>=)", ">="),
-    ("小于等于 (<=)", "<="),
-    ("包含", "contains"),
-    ("与当前时间差(分钟)在区间内", "time_diff_between"),
+    ("等于（模糊匹配）", "eq"),
+    ("不等于（模糊匹配）", "ne"),
+    ("包含（模糊匹配）", "contains"),
+    ("时间等于（精准）", "time_eq"),
+    ("时间早于（精准）", "time_before"),
+    ("时间晚于（精准）", "time_after"),
+    ("与当前时间差≥X分钟", "tdiff_gte"),
+    ("与当前时间差≤X分钟", "tdiff_lte"),
+    ("与当前时间差≈X分钟", "tdiff_eq"),
 ]
 OP_LABEL2KEY = {label: key for label, key in OP_CHOICES}
 OP_KEY2LABEL = {key: label for label, key in OP_CHOICES}
@@ -135,7 +136,7 @@ class MonitorApp:
         editor = ttk.Frame(cond_frame)
         editor.pack(fill="x", padx=4, pady=2)
         ttk.Label(editor, text="字段").pack(side="left")
-        self.cond_col = ttk.Entry(editor, width=12)
+        self.cond_col = ttk.Entry(editor, width=14)
         self.cond_col.pack(side="left", padx=2)
         ttk.Label(editor, text="条件").pack(side="left")
         self.cond_op = ttk.Combobox(editor, values=[l for l, _ in OP_CHOICES],
@@ -143,17 +144,14 @@ class MonitorApp:
         self.cond_op.current(0)
         self.cond_op.pack(side="left", padx=2)
         ttk.Label(editor, text="值").pack(side="left")
-        self.cond_val = ttk.Entry(editor, width=12)
+        self.cond_val = ttk.Entry(editor, width=22)
         self.cond_val.pack(side="left", padx=2)
-        ttk.Label(editor, text="~").pack(side="left")
-        self.cond_val2 = ttk.Entry(editor, width=8)
-        self.cond_val2.pack(side="left", padx=2)
         ttk.Button(editor, text="添加条件", command=self._add_condition).pack(side="left", padx=6)
 
-        self.cond_tree = ttk.Treeview(cond_frame, columns=("column", "op", "value", "value2"),
+        self.cond_tree = ttk.Treeview(cond_frame, columns=("column", "op", "value"),
                                       show="headings", height=4)
-        for col, text_, w in (("column", "字段", 130), ("op", "条件", 200),
-                              ("value", "值", 130), ("value2", "值2(仅时间区间)", 130)):
+        for col, text_, w in (("column", "字段", 180), ("op", "条件", 240),
+                              ("value", "值", 200)):
             self.cond_tree.heading(col, text=text_)
             self.cond_tree.column(col, width=w)
         self.cond_tree.pack(fill="x", padx=4, pady=2)
@@ -215,26 +213,28 @@ class MonitorApp:
         col = self.cond_col.get().strip()
         op = OP_LABEL2KEY[self.cond_op.get()]
         val = self.cond_val.get().strip()
-        val2 = self.cond_val2.get().strip()
         if not col or not val:
             messagebox.showerror("输入有误", "条件的字段和值不能为空")
             return
-        if op == "time_diff_between":
-            if not val2:
-                messagebox.showerror("输入有误", "时间区间条件需要填写 值 和 值2（分钟上下限）")
-                return
+        if op.startswith("tdiff_"):
             try:
-                if not (0 <= float(val) <= float(val2)):
+                if float(val) < 0:
                     raise ValueError
             except ValueError:
-                messagebox.showerror("输入有误", "时间区间上下限必须为数字，且下限 ≤ 上限")
+                messagebox.showerror("输入有误", "时间差条件的值必须为非负数字（分钟）")
                 return
-        cond = {"column": col, "op": op, "value": val, "value2": val2}
+        if op.startswith("time_"):
+            from monitor import parse_time
+            try:
+                parse_time(val)
+            except ValueError as e:
+                messagebox.showerror("输入有误", str(e))
+                return
+        cond = {"column": col, "op": op, "value": val}
         self.conditions.append(cond)
-        self.cond_tree.insert("", "end", values=(col, OP_KEY2LABEL[op], val, val2))
+        self.cond_tree.insert("", "end", values=(col, OP_KEY2LABEL[op], val))
         self.cond_col.delete(0, "end")
         self.cond_val.delete(0, "end")
-        self.cond_val2.delete(0, "end")
 
     def _del_condition(self):
         for item in self.cond_tree.selection():
@@ -273,7 +273,7 @@ class MonitorApp:
             self.conditions.append(cond)
             self.cond_tree.insert("", "end", values=(
                 cond["column"], OP_KEY2LABEL.get(cond["op"], cond["op"]),
-                cond.get("value", ""), cond.get("value2", "")))
+                cond.get("value", "")))
         for f in cfg.get("notify_fields", []):
             self.notify_fields.append(f)
             self.nf_list.insert("end", f)
