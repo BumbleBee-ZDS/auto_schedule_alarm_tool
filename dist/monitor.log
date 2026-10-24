@@ -1,0 +1,173 @@
+01:15:28 [INFO] 监控已启动
+01:15:28 [ERROR] 数据库连接或查询失败
+Traceback (most recent call last):
+  File "sqlalchemy\engine\base.py", line 144, in __init__
+  File "sqlalchemy\engine\base.py", line 3319, in raw_connection
+  File "sqlalchemy\pool\base.py", line 448, in connect
+  File "sqlalchemy\pool\base.py", line 1272, in _checkout
+  File "sqlalchemy\pool\base.py", line 712, in checkout
+  File "sqlalchemy\pool\impl.py", line 178, in _do_get
+  File "sqlalchemy\util\langhelpers.py", line 122, in __exit__
+  File "sqlalchemy\pool\impl.py", line 176, in _do_get
+  File "sqlalchemy\pool\base.py", line 389, in _create_connection
+  File "sqlalchemy\pool\base.py", line 674, in __init__
+  File "sqlalchemy\pool\base.py", line 900, in __connect
+  File "sqlalchemy\util\langhelpers.py", line 122, in __exit__
+  File "sqlalchemy\pool\base.py", line 896, in __connect
+  File "sqlalchemy\engine\create.py", line 667, in connect
+  File "sqlalchemy\engine\default.py", line 630, in connect
+  File "pymysql\connections.py", line 373, in __init__
+  File "pymysql\connections.py", line 702, in connect
+  File "pymysql\connections.py", line 1046, in _request_authentication
+  File "pymysql\connections.py", line 1150, in _process_auth
+  File "pymysql\connections.py", line 810, in _read_packet
+  File "pymysql\protocol.py", line 219, in raise_for_error
+  File "pymysql\err.py", line 154, in raise_mysql_exception
+pymysql.err.OperationalError: (1045, "Access denied for user 'your_username'@'localhost' (using password: YES)")
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "monitor.py", line 153, in check_once
+  File "sqlalchemy\engine\base.py", line 3295, in connect
+  File "sqlalchemy\engine\base.py", line 146, in __init__
+  File "sqlalchemy\engine\base.py", line 2450, in _handle_dbapi_exception_noconnection
+  File "sqlalchemy\engine\base.py", line 144, in __init__
+  File "sqlalchemy\engine\base.py", line 3319, in raw_connection
+  File "sqlalchemy\pool\base.py", line 448, in connect
+  File "sqlalchemy\pool\base.py", line 1272, in _checkout
+  File "sqlalchemy\pool\base.py", line 712, in checkout
+  File "sqlalchemy\pool\impl.py", line 178, in _do_get
+  File "sqlalchemy\util\langhelpers.py", line 122, in __exit__
+  File "sqlalchemy\pool\impl.py", line 176, in _do_get
+  File "sqlalchemy\pool\base.py", line 389, in _create_connection
+  File "sqlalchemy\pool\base.py", line 674, in __init__
+  File "sqlalchemy\pool\base.py", line 900, in __connect
+  File "sqlalchemy\util\langhelpers.py", line 122, in __exit__
+  File "sqlalchemy\pool\base.py", line 896, in __connect
+  File "sqlalchemy\engine\create.py", line 667, in connect
+  File "sqlalchemy\engine\default.py", line 630, in connect
+  File "pymysql\connections.py", line 373, in __init__
+  File "pymysql\connections.py", line 702, in connect
+  File "pymysql\connections.py", line 1046, in _request_authentication
+  File "pymysql\connections.py", line 1150, in _process_auth
+  File "pymysql\connections.py", line 810, in _read_packet
+  File "pymysql\protocol.py", line 219, in raise_for_error
+  File "pymysql\err.py", line 154, in raise_mysql_exception
+sqlalchemy.exc.OperationalError: (pymysql.err.OperationalError) (1045, "Access denied for user 'your_username'@'localhost' (using password: YES)")
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+01:20:28 [ERROR] 数据库连接或查询失败
+Traceback (most recent call last):
+  File "sqlalchemy\engine\base.py", line 144, in __init__
+  File "sqlalchemy\engine\base.py", line 3319, in raw_connection
+  File "sqlalchemy\pool\base.py", line 448, in connect
+  File "sqlalchemy\pool\base.py", line 1272, in _checkout
+  File "sqlalchemy\pool\base.py", line 712, in checkout
+  File "sqlalchemy\pool\impl.py", line 178, in _do_get
+  File "sqlalchemy\util\langhelpers.py", line 122, in __exit__
+  File "sqlalchemy\pool\impl.py", line 176, in _do_get
+  File "sqlalchemy\pool\base.py", line 389, in _create_connection
+  File "sqlalchemy\pool\base.py", line 674, in __init__
+  File "sqlalchemy\pool\base.py", line 900, in __connect
+  File "sqlalchemy\util\langhelpers.py", line 122, in __exit__
+  File "sqlalchemy\pool\base.py", line 896, in __connect
+  File "sqlalchemy\engine\create.py", line 667, in connect
+  File "sqlalchemy\engine\default.py", line 630, in connect
+  File "pymysql\connections.py", line 373, in __init__
+  File "pymysql\connections.py", line 702, in connect
+  File "pymysql\connections.py", line 1046, in _request_authentication
+  File "pymysql\connections.py", line 1150, in _process_auth
+  File "pymysql\connections.py", line 810, in _read_packet
+  File "pymysql\protocol.py", line 219, in raise_for_error
+  File "pymysql\err.py", line 154, in raise_mysql_exception
+pymysql.err.OperationalError: (1045, "Access denied for user 'your_username'@'localhost' (using password: YES)")
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "monitor.py", line 153, in check_once
+  File "sqlalchemy\engine\base.py", line 3295, in connect
+  File "sqlalchemy\engine\base.py", line 146, in __init__
+  File "sqlalchemy\engine\base.py", line 2450, in _handle_dbapi_exception_noconnection
+  File "sqlalchemy\engine\base.py", line 144, in __init__
+  File "sqlalchemy\engine\base.py", line 3319, in raw_connection
+  File "sqlalchemy\pool\base.py", line 448, in connect
+  File "sqlalchemy\pool\base.py", line 1272, in _checkout
+  File "sqlalchemy\pool\base.py", line 712, in checkout
+  File "sqlalchemy\pool\impl.py", line 178, in _do_get
+  File "sqlalchemy\util\langhelpers.py", line 122, in __exit__
+  File "sqlalchemy\pool\impl.py", line 176, in _do_get
+  File "sqlalchemy\pool\base.py", line 389, in _create_connection
+  File "sqlalchemy\pool\base.py", line 674, in __init__
+  File "sqlalchemy\pool\base.py", line 900, in __connect
+  File "sqlalchemy\util\langhelpers.py", line 122, in __exit__
+  File "sqlalchemy\pool\base.py", line 896, in __connect
+  File "sqlalchemy\engine\create.py", line 667, in connect
+  File "sqlalchemy\engine\default.py", line 630, in connect
+  File "pymysql\connections.py", line 373, in __init__
+  File "pymysql\connections.py", line 702, in connect
+  File "pymysql\connections.py", line 1046, in _request_authentication
+  File "pymysql\connections.py", line 1150, in _process_auth
+  File "pymysql\connections.py", line 810, in _read_packet
+  File "pymysql\protocol.py", line 219, in raise_for_error
+  File "pymysql\err.py", line 154, in raise_mysql_exception
+sqlalchemy.exc.OperationalError: (pymysql.err.OperationalError) (1045, "Access denied for user 'your_username'@'localhost' (using password: YES)")
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+01:32:20 [INFO] 监控已启动
+01:32:20 [ERROR] 数据库连接或查询失败
+Traceback (most recent call last):
+  File "sqlalchemy\engine\base.py", line 144, in __init__
+  File "sqlalchemy\engine\base.py", line 3319, in raw_connection
+  File "sqlalchemy\pool\base.py", line 448, in connect
+  File "sqlalchemy\pool\base.py", line 1272, in _checkout
+  File "sqlalchemy\pool\base.py", line 712, in checkout
+  File "sqlalchemy\pool\impl.py", line 178, in _do_get
+  File "sqlalchemy\util\langhelpers.py", line 122, in __exit__
+  File "sqlalchemy\pool\impl.py", line 176, in _do_get
+  File "sqlalchemy\pool\base.py", line 389, in _create_connection
+  File "sqlalchemy\pool\base.py", line 674, in __init__
+  File "sqlalchemy\pool\base.py", line 900, in __connect
+  File "sqlalchemy\util\langhelpers.py", line 122, in __exit__
+  File "sqlalchemy\pool\base.py", line 896, in __connect
+  File "sqlalchemy\engine\create.py", line 667, in connect
+  File "sqlalchemy\engine\default.py", line 630, in connect
+  File "pymysql\connections.py", line 373, in __init__
+  File "pymysql\connections.py", line 702, in connect
+  File "pymysql\connections.py", line 1046, in _request_authentication
+  File "pymysql\connections.py", line 1150, in _process_auth
+  File "pymysql\connections.py", line 810, in _read_packet
+  File "pymysql\protocol.py", line 219, in raise_for_error
+  File "pymysql\err.py", line 154, in raise_mysql_exception
+pymysql.err.OperationalError: (1045, "Access denied for user 'your_username'@'localhost' (using password: YES)")
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "monitor.py", line 208, in check_once
+  File "sqlalchemy\engine\base.py", line 3295, in connect
+  File "sqlalchemy\engine\base.py", line 146, in __init__
+  File "sqlalchemy\engine\base.py", line 2450, in _handle_dbapi_exception_noconnection
+  File "sqlalchemy\engine\base.py", line 144, in __init__
+  File "sqlalchemy\engine\base.py", line 3319, in raw_connection
+  File "sqlalchemy\pool\base.py", line 448, in connect
+  File "sqlalchemy\pool\base.py", line 1272, in _checkout
+  File "sqlalchemy\pool\base.py", line 712, in checkout
+  File "sqlalchemy\pool\impl.py", line 178, in _do_get
+  File "sqlalchemy\util\langhelpers.py", line 122, in __exit__
+  File "sqlalchemy\pool\impl.py", line 176, in _do_get
+  File "sqlalchemy\pool\base.py", line 389, in _create_connection
+  File "sqlalchemy\pool\base.py", line 674, in __init__
+  File "sqlalchemy\pool\base.py", line 900, in __connect
+  File "sqlalchemy\util\langhelpers.py", line 122, in __exit__
+  File "sqlalchemy\pool\base.py", line 896, in __connect
+  File "sqlalchemy\engine\create.py", line 667, in connect
+  File "sqlalchemy\engine\default.py", line 630, in connect
+  File "pymysql\connections.py", line 373, in __init__
+  File "pymysql\connections.py", line 702, in connect
+  File "pymysql\connections.py", line 1046, in _request_authentication
+  File "pymysql\connections.py", line 1150, in _process_auth
+  File "pymysql\connections.py", line 810, in _read_packet
+  File "pymysql\protocol.py", line 219, in raise_for_error
+  File "pymysql\err.py", line 154, in raise_mysql_exception
+sqlalchemy.exc.OperationalError: (pymysql.err.OperationalError) (1045, "Access denied for user 'your_username'@'localhost' (using password: YES)")
+(Background on this error at: https://sqlalche.me/e/20/e3q8)

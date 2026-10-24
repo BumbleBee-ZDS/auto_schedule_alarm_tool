@@ -1,0 +1,4 @@
+  File "<string>", line 6
+    'query': {'sql': \
+             ^
+SyntaxError: '{' was never closed

@@ -1,0 +1,38 @@
+{
+  "database": {
+    "driver": "mysql+pymysql",
+    "host": "127.0.0.1",
+    "port": "3306",
+    "user": "your_username",
+    "password": "your_password",
+    "database": "your_database"
+  },
+  "query": {
+    "sql": "SELECT id, description, data_time FROM events WHERE data_time >= DATE_SUB(NOW(), INTERVAL 24 HOUR)"
+  },
+  "schedule": {
+    "interval_minutes": 5
+  },
+  "combinator": "AND",
+  "conditions": [
+    {
+      "column": "data_time",
+      "op": "time_diff_between",
+      "value": "55",
+      "value2": "65"
+    },
+    {
+      "column": "id",
+      "op": "=",
+      "value": "123",
+      "value2": "123"
+    },
+    {
+      "column": "id",
+      "op": "=",
+      "value": "1",
+      "value2": ""
+    }
+  ],
+  "notify_fields": []
+}
